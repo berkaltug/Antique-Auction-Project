@@ -1,10 +1,10 @@
-package com.scopic.antiqueauction.domain.dto;
+package com.scopic.antiqueauction.domain.request;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigInteger;
 
-public class AntiqueDto {
+public class AntiqueRequest {
 
     private Integer id;
     private String name;

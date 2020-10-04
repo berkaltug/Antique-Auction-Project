@@ -40,7 +40,7 @@ public class AntiqueServiceImpl implements AntiqueService {
     }
 
     @Override
-    public Optional<Antique> deleteAntiqueById(Integer id) {
-        return Optional.empty();
+    public void deleteAntiqueById(Integer id) {
+        antiqueRepository.deleteById(id);
     }
 }
