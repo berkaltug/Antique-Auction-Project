@@ -1,7 +1,6 @@
 package com.scopic.antiqueauction.domain.entity;
 
 import javax.persistence.*;
-import java.io.File;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
@@ -17,7 +16,7 @@ public class Antique {
     private BigInteger price;
     private BigInteger latestBid;
     @Lob
-    private byte[] image;
+    private String imagePath;
 
     public void setId(Integer id) {
         this.id = id;
@@ -60,12 +59,12 @@ public class Antique {
         this.latestBid = latestBid;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     @Override
@@ -78,14 +77,12 @@ public class Antique {
                 Objects.equals(description, antique.description) &&
                 Objects.equals(price, antique.price) &&
                 Objects.equals(latestBid, antique.latestBid) &&
-                Arrays.equals(image, antique.image);
+                Objects.equals(imagePath, antique.imagePath);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, name, description, price, latestBid);
-        result = 31 * result + Arrays.hashCode(image);
-        return result;
+        return Objects.hash(id, name, description, price, latestBid, imagePath);
     }
 
     @Override

@@ -30,12 +30,13 @@ public class AntiqueServiceImpl implements AntiqueService {
 
     @Override
     public Optional<Antique> getAntiqueById(Integer id) {
-        return Optional.empty();
+        return antiqueRepository.findById(id);
     }
 
     @Override
-    public Optional<Antique> updateAntique(Antique antique) {
-        return Optional.empty();
+    public Optional<Antique> updateAntique(Antique antique,String imagePath) {
+        antique.setImagePath(imagePath);
+        return Optional.of(antiqueRepository.save(antique));
     }
 
     @Override
