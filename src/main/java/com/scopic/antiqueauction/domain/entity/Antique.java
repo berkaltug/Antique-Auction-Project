@@ -10,12 +10,10 @@ public class Antique {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
     private String name;
     private String description;
     private BigInteger price;
     private BigInteger latestBid;
-    @Lob
     private String imagePath;
 
     public void setId(Integer id) {
