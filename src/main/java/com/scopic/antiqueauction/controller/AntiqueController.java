@@ -1,6 +1,7 @@
 package com.scopic.antiqueauction.controller;
 
 import com.scopic.antiqueauction.domain.entity.Antique;
+import com.scopic.antiqueauction.domain.response.AntiqueResponse;
 import com.scopic.antiqueauction.service.AntiqueService;
 import com.scopic.antiqueauction.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,13 @@ public class AntiqueController {
         return antiqueService.getAllAntiques(page, direction);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Antique> getAntique(@PathVariable("id")Integer id){
-        Optional<Antique> optionalAntique=antiqueService.getAntiqueById(id);
+    @GetMapping("/see/{id}")
+    public ResponseEntity<?> getAntique(@PathVariable("id")Integer id){
+        Optional<AntiqueResponse> optionalAntique=antiqueService.getAntiqueById(id);
         if(optionalAntique.isPresent()){
             return new ResponseEntity<>(optionalAntique.get(),HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Could not find an item for given id",HttpStatus.NOT_FOUND);
         }
-        return null;
     }
 }
