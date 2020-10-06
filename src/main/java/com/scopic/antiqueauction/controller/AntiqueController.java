@@ -46,7 +46,7 @@ public class AntiqueController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addAntique(AntiqueRequest request){
+    public ResponseEntity<?> addAntique(@RequestBody AntiqueRequest request){
         try{
             Optional<Antique> optionalAntique = antiqueService.addAntique(request);
             if(optionalAntique.isPresent()){
