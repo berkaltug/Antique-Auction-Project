@@ -1,6 +1,7 @@
 package com.scopic.antiqueauction.controller;
 
 import com.scopic.antiqueauction.domain.entity.Antique;
+import com.scopic.antiqueauction.domain.request.AntiqueRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
 import com.scopic.antiqueauction.service.AntiqueService;
 import com.scopic.antiqueauction.service.FileStorageService;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -37,6 +40,16 @@ public class AntiqueController {
             return new ResponseEntity<>(optionalAntique.get(),HttpStatus.OK);
         }else{
             return new ResponseEntity<>("Could not find an item for given id",HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity<?> addAntique(AntiqueRequest request){
+        try{
+            List<String> pathList = fileStorageService.storeZip(request.getImage());
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_IMPLEMENTED);
         }
     }
 }
