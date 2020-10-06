@@ -1,8 +1,10 @@
 package com.scopic.antiqueauction.controller;
 
+import com.scopic.antiqueauction.domain.converter.AntiqueConverter;
 import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.request.AntiqueRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
+import com.scopic.antiqueauction.service.AntiqueImageService;
 import com.scopic.antiqueauction.service.AntiqueService;
 import com.scopic.antiqueauction.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,11 @@ import java.util.Optional;
 public class AntiqueController {
 
     private AntiqueService antiqueService;
-    private FileStorageService fileStorageService;
+
+
     @Autowired
-    public AntiqueController(AntiqueService antiqueService, FileStorageService fileStorageService) {
+    public AntiqueController(AntiqueService antiqueService) {
         this.antiqueService = antiqueService;
-        this.fileStorageService = fileStorageService;
     }
 
     @GetMapping("/list")
@@ -43,10 +45,15 @@ public class AntiqueController {
         }
     }
 
+    @PostMapping("/add")
     public ResponseEntity<?> addAntique(AntiqueRequest request){
         try{
-            List<String> pathList = fileStorageService.storeZip(request.getImage());
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            Optional<Antique> optionalAntique = antiqueService.addAntique(request);
+            if(optionalAntique.isPresent()){
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            }else{
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_IMPLEMENTED);

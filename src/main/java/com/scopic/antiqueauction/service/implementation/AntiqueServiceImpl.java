@@ -1,11 +1,17 @@
 package com.scopic.antiqueauction.service.implementation;
 
+import com.scopic.antiqueauction.domain.converter.AntiqueConverter;
 import com.scopic.antiqueauction.domain.converter.AntiqueResponseConverter;
 import com.scopic.antiqueauction.domain.entity.Antique;
+import com.scopic.antiqueauction.domain.entity.AntiqueImage;
+import com.scopic.antiqueauction.domain.request.AntiqueRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
 import com.scopic.antiqueauction.repository.AntiqueRepository;
 import com.scopic.antiqueauction.repository.PastBidRepository;
+import com.scopic.antiqueauction.service.AntiqueImageService;
 import com.scopic.antiqueauction.service.AntiqueService;
+import com.scopic.antiqueauction.service.FileStorageService;
+import com.scopic.antiqueauction.service.PastBidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +30,16 @@ import java.util.stream.Collectors;
 public class AntiqueServiceImpl implements AntiqueService {
 
     private AntiqueRepository antiqueRepository;
-    private PastBidRepository pastBidRepository;
+    private PastBidService pastBidService;
+    private AntiqueImageService antiqueImageService;
+    private FileStorageService fileStorageService;
+
     @Autowired
-    public AntiqueServiceImpl(AntiqueRepository antiqueRepository, PastBidRepository pastBidRepository) {
+    public AntiqueServiceImpl(AntiqueRepository antiqueRepository, PastBidService pastBidService,AntiqueImageService antiqueImageService,FileStorageService fileStorageService) {
         this.antiqueRepository = antiqueRepository;
-        this.pastBidRepository = pastBidRepository;
+        this.pastBidService = pastBidService;
+        this.antiqueImageService = antiqueImageService;
+        this.fileStorageService=fileStorageService;
     }
 
     @Override
@@ -39,22 +51,35 @@ public class AntiqueServiceImpl implements AntiqueService {
     @Override
     public Optional<AntiqueResponse> getAntiqueById(Integer id) {
         Optional<Antique> optionalAntique = antiqueRepository.findById(id);
-
         if(optionalAntique.isPresent()){
-            List<BigInteger> bids=pastBidRepository.findAllByAntique(optionalAntique.get())
+            List<String> imagePaths=antiqueImageService.getAntiqueImages(optionalAntique.get())
+                    .stream()
+                    .map(antiqueImage -> antiqueImage.getPath())
+                    .collect(Collectors.toList());
+            List<BigInteger> bids=pastBidService.getPastBidsByAntique(optionalAntique.get())
                     .stream()
                     .map(pastBid -> pastBid.getBid())
                     .collect(Collectors.toList());
-            return  Optional.of(AntiqueResponseConverter.convert(optionalAntique.get(),bids));
+            return  Optional.of(AntiqueResponseConverter.convert(optionalAntique.get(),bids,imagePaths));
         }else{
             return Optional.empty();
         }
     }
 
     @Override
-    public Optional<Antique> updateAntique(Antique antique,String imagePath) {
-        antique.setImagePath(imagePath);
-        return Optional.of(antiqueRepository.save(antique));
+    public Optional<Antique> addAntique(AntiqueRequest request) throws IOException {
+        List<String> pathList=null;
+        Optional<Antique> antique=Optional.of(antiqueRepository.save(AntiqueConverter.convert(request)));
+        if (antique.isPresent() && request.getImage() != null) {
+            pathList= fileStorageService.storeZip(request.getImage());
+            pathList.forEach(path-> {
+                AntiqueImage antiqueImage=new AntiqueImage();
+                antiqueImage.setaAntique(antique.get());
+                antiqueImage.setPath(path);
+                antiqueImageService.addAntiqueImage(antiqueImage);
+            });
+        }
+        return antique;
     }
 
     @Override

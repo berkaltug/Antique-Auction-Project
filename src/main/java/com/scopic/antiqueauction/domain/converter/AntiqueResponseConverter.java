@@ -8,15 +8,15 @@ import java.math.BigInteger;
 import java.util.List;
 
 public class AntiqueResponseConverter {
-    public static AntiqueResponse convert(final Antique antique ,final List<BigInteger> bids){
+    public static AntiqueResponse convert(final Antique antique ,final List<BigInteger> bids,List<String> imagePaths){
         final AntiqueResponse antiqueResponse=new AntiqueResponse();
         antiqueResponse.setId(antique.getId());
         antiqueResponse.setName(antique.getName());
         antiqueResponse.setDescription(antique.getDescription());
         antiqueResponse.setPrice(antique.getPrice());
-        antiqueResponse.setImagePath(antique.getImagePath());
         antiqueResponse.setLatestBid(antique.getLatestBid());
         antiqueResponse.setPastBids(bids);
+        antiqueResponse.setImagePath(imagePaths);
         return antiqueResponse;
     }
 }

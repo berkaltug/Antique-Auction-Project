@@ -5,9 +5,11 @@ import com.scopic.antiqueauction.domain.entity.AntiqueImage;
 import com.scopic.antiqueauction.repository.AntiqueImageRepository;
 import com.scopic.antiqueauction.service.AntiqueImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class AntiqueImageServiceImpl implements AntiqueImageService {
 
     private AntiqueImageRepository antiqueImageRepository;

@@ -14,7 +14,6 @@ public class Antique {
     private String description;
     private BigInteger price;
     private BigInteger latestBid;
-    private String imagePath;
 
     public void setId(Integer id) {
         this.id = id;
@@ -57,14 +56,6 @@ public class Antique {
         this.latestBid = latestBid;
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,13 +65,12 @@ public class Antique {
                 Objects.equals(name, antique.name) &&
                 Objects.equals(description, antique.description) &&
                 Objects.equals(price, antique.price) &&
-                Objects.equals(latestBid, antique.latestBid) &&
-                Objects.equals(imagePath, antique.imagePath);
+                Objects.equals(latestBid, antique.latestBid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, latestBid, imagePath);
+        return Objects.hash(id, name, description, price, latestBid);
     }
 
     @Override

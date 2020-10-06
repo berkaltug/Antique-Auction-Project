@@ -10,7 +10,7 @@ public class AntiqueResponse {
     private BigInteger price;
     private BigInteger latestBid;
     private List<BigInteger> pastBids;
-    private String imagePath;
+    private List<String> imagePath;
 
     public Integer getId() {
         return id;
@@ -60,11 +60,11 @@ public class AntiqueResponse {
         this.pastBids = pastBids;
     }
 
-    public String getImagePath() {
+    public List<String> getImagePath() {
         return imagePath;
     }
 
-    public void setImagePath(String imagePath) {
+    public void setImagePath(List<String> imagePath) {
         this.imagePath = imagePath;
     }
 }
