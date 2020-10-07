@@ -14,5 +14,6 @@ public interface AntiqueService {
     Page<Antique> getAllAntiques(int pageNo, Sort.Direction direction);
     Optional<AntiqueResponse> getAntiqueById(Integer id);
     Optional<Antique> addAntique(AntiqueRequest request) throws IOException;
+    Optional<Antique> updateAntique(AntiqueRequest request) throws IOException;
     void deleteAntiqueById(Integer id);
 }

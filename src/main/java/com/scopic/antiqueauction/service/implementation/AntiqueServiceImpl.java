@@ -68,6 +68,20 @@ public class AntiqueServiceImpl implements AntiqueService {
 
     @Override
     public Optional<Antique> addAntique(AntiqueRequest request) throws IOException {
+        return addOrUpdateAntique(request);
+    }
+
+    @Override
+    public Optional<Antique> updateAntique(AntiqueRequest request) throws IOException {
+        return addOrUpdateAntique(request);
+    }
+
+    @Override
+    public void deleteAntiqueById(Integer id) {
+        antiqueRepository.deleteById(id);
+    }
+
+    private Optional<Antique> addOrUpdateAntique(AntiqueRequest request) throws IOException {
         List<String> pathList=null;
         Optional<Antique> antique=Optional.of(antiqueRepository.save(AntiqueConverter.convert(request)));
         if (antique.isPresent() && request.getImage() != null) {
@@ -80,10 +94,5 @@ public class AntiqueServiceImpl implements AntiqueService {
             });
         }
         return antique;
-    }
-
-    @Override
-    public void deleteAntiqueById(Integer id) {
-        antiqueRepository.deleteById(id);
     }
 }

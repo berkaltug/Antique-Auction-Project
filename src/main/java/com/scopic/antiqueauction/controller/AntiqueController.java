@@ -46,7 +46,7 @@ public class AntiqueController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addAntique(@RequestBody AntiqueRequest request){
+    public ResponseEntity<?> addAntique(@ModelAttribute AntiqueRequest request){
         try{
             Optional<Antique> optionalAntique = antiqueService.addAntique(request);
             if(optionalAntique.isPresent()){
@@ -59,4 +59,27 @@ public class AntiqueController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_IMPLEMENTED);
         }
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateAntique(@ModelAttribute AntiqueRequest request){
+        try{
+            Optional<Antique> optionalAntique = antiqueService.updateAntique(request);
+            if(optionalAntique.isPresent()){
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            }else{
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_IMPLEMENTED);
+        }
+    }
+
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<String> deleteAntique(@PathVariable("id") Integer id){
+        antiqueService.deleteAntiqueById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }
