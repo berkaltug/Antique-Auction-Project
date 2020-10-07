@@ -15,7 +15,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/antique/list", "/antique/see/**").hasAnyRole("REGULAR","ADMIN")
-                .antMatchers("/antique/add").hasRole("ADMIN")
+                .antMatchers("/antique/add","/antique/delete/**").hasRole("ADMIN")
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and().headers().frameOptions().disable()//neccessary for h2-console

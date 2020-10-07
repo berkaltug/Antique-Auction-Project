@@ -20,8 +20,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +59,7 @@ public class AntiqueServiceImpl implements AntiqueService {
                     .stream()
                     .map(antiqueImage -> antiqueImage.getPath())
                     .collect(Collectors.toList());
-            List<BigInteger> bids=pastBidService.getPastBidsByAntique(optionalAntique.get())
+            List<BigDecimal> bids=pastBidService.getPastBidsByAntique(optionalAntique.get())
                     .stream()
                     .map(pastBid -> pastBid.getBid())
                     .collect(Collectors.toList());
@@ -78,8 +80,14 @@ public class AntiqueServiceImpl implements AntiqueService {
     }
 
     @Override
+    @Transactional
     public void deleteAntiqueById(Integer id) {
-        antiqueRepository.deleteById(id);
+        Optional<Antique> optionalAntique=antiqueRepository.findById(id);
+        optionalAntique.ifPresent(antique -> {
+            antiqueImageService.deleteAllByAntique(antique);
+            pastBidService.deleteAllByAntique(antique);
+            antiqueRepository.delete(antique);
+        });
     }
 
     private Optional<Antique> addOrUpdateAntique(AntiqueRequest request) throws IOException {

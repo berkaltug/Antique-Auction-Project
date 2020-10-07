@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface PastBidRepository extends JpaRepository<PastBid,Integer> {
     List<PastBid> findAllByAntique(Antique antique);
+    void deleteAllByAntique(Antique antique);
 }

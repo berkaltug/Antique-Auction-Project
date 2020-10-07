@@ -8,4 +8,5 @@ import java.util.List;
 public interface AntiqueImageService {
     void addAntiqueImage(AntiqueImage antiqueImage);
     List<AntiqueImage> getAntiqueImages(Antique antique);
+    void deleteAllByAntique(Antique antique);
 }

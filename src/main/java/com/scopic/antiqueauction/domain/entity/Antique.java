@@ -1,6 +1,7 @@
 package com.scopic.antiqueauction.domain.entity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
@@ -12,8 +13,8 @@ public class Antique {
     private Integer id;
     private String name;
     private String description;
-    private BigInteger price;
-    private BigInteger latestBid;
+    private BigDecimal price;
+    private BigDecimal latestBid;
 
     public void setId(Integer id) {
         this.id = id;
@@ -40,19 +41,19 @@ public class Antique {
         this.description = description;
     }
 
-    public BigInteger getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(BigInteger price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public BigInteger getLatestBid() {
+    public BigDecimal getLatestBid() {
         return latestBid;
     }
 
-    public void setLatestBid(BigInteger latestBid) {
+    public void setLatestBid(BigDecimal latestBid) {
         this.latestBid = latestBid;
     }
 

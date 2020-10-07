@@ -28,4 +28,9 @@ public class AntiqueImageServiceImpl implements AntiqueImageService {
     public List<AntiqueImage> getAntiqueImages(Antique antique) {
         return antiqueImageRepository.findAllByAntique(antique);
     }
+
+    @Override
+    public void deleteAllByAntique(Antique antique) {
+        antiqueImageRepository.deleteAllByAntique(antique);
+    }
 }

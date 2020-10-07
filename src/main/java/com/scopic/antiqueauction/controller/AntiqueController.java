@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public class AntiqueController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addAntique(@ModelAttribute AntiqueRequest request){
+    public ResponseEntity<?> addAntique(@ModelAttribute @Valid AntiqueRequest request){
         try{
             Optional<Antique> optionalAntique = antiqueService.addAntique(request);
             if(optionalAntique.isPresent()){
@@ -60,7 +61,7 @@ public class AntiqueController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> updateAntique(@ModelAttribute AntiqueRequest request){
+    public ResponseEntity<?> updateAntique(@ModelAttribute @Valid AntiqueRequest request){
         try{
             Optional<Antique> optionalAntique = antiqueService.updateAntique(request);
             if(optionalAntique.isPresent()){
@@ -74,7 +75,7 @@ public class AntiqueController {
         }
     }
     @PostMapping("/bid")
-    public ResponseEntity<String> makeBid(@RequestBody BidRequest request){
+    public ResponseEntity<String> makeBid(@RequestBody @Valid BidRequest request){
         try{
             antiqueService.makeBid(request);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -83,7 +84,7 @@ public class AntiqueController {
         }
     };
 
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteAntique(@PathVariable("id") Integer id){
         antiqueService.deleteAntiqueById(id);
         return new ResponseEntity<>(HttpStatus.OK);

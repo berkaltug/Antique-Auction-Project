@@ -1,6 +1,7 @@
 package com.scopic.antiqueauction.domain.entity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
@@ -12,7 +13,7 @@ public class PastBid {
     private Integer id;
     @ManyToOne(fetch = FetchType.LAZY)
     private Antique antique;
-    private BigInteger bid;
+    private BigDecimal bid;
 
     @Override
     public String toString() {
@@ -54,11 +55,11 @@ public class PastBid {
         this.antique = antique;
     }
 
-    public BigInteger getBid() {
+    public BigDecimal getBid() {
         return bid;
     }
 
-    public void setBid(BigInteger bid) {
+    public void setBid(BigDecimal bid) {
         this.bid = bid;
     }
 }

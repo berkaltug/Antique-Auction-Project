@@ -1,5 +1,6 @@
 package com.scopic.antiqueauction.domain.response;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -7,9 +8,9 @@ public class AntiqueResponse {
     private Integer id;
     private String name;
     private String description;
-    private BigInteger price;
-    private BigInteger latestBid;
-    private List<BigInteger> pastBids;
+    private BigDecimal price;
+    private BigDecimal latestBid;
+    private List<BigDecimal> pastBids;
     private List<String> imagePath;
 
     public Integer getId() {
@@ -36,27 +37,27 @@ public class AntiqueResponse {
         this.description = description;
     }
 
-    public BigInteger getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(BigInteger price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public BigInteger getLatestBid() {
+    public BigDecimal getLatestBid() {
         return latestBid;
     }
 
-    public void setLatestBid(BigInteger latestBid) {
+    public void setLatestBid(BigDecimal latestBid) {
         this.latestBid = latestBid;
     }
 
-    public List<BigInteger> getPastBids() {
+    public List<BigDecimal> getPastBids() {
         return pastBids;
     }
 
-    public void setPastBids(List<BigInteger> pastBids) {
+    public void setPastBids(List<BigDecimal> pastBids) {
         this.pastBids = pastBids;
     }
 

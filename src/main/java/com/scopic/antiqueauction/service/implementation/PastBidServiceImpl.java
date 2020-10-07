@@ -7,6 +7,7 @@ import com.scopic.antiqueauction.service.PastBidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class PastBidServiceImpl implements PastBidService {
     }
 
     @Override
-    public BigInteger getHighestBid(Antique antique){
-        BigInteger highest=new BigInteger("0");
+    public BigDecimal getHighestBid(Antique antique){
+        BigDecimal highest=new BigDecimal("0");
         List<PastBid> pastBids=pastBidRepository.findAllByAntique(antique);
         for (PastBid pastBid : pastBids) {
             if (pastBid.getBid().compareTo(highest) == 1) {
@@ -38,5 +39,10 @@ public class PastBidServiceImpl implements PastBidService {
             }
         }
         return highest;
+    }
+
+    @Override
+    public void deleteAllByAntique(Antique antique) {
+        pastBidRepository.deleteAllByAntique(antique);
     }
 }

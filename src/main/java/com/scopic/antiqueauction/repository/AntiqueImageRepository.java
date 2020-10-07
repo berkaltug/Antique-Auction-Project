@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface AntiqueImageRepository extends JpaRepository<AntiqueImage,Integer> {
     List<AntiqueImage> findAllByAntique(Antique antique);
+    void deleteAllByAntique(Antique antique);
 }

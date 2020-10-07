@@ -58,27 +58,29 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
+
     public List<String> storeZip(MultipartFile file) throws IOException {
-        List<String> pathNames=new LinkedList<String>();
+        List<String> pathNames = new LinkedList<String>();
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         byte[] bytes = file.getBytes();
         ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bytes));
-        ZipEntry entry=null;
-        try{
+        ZipEntry entry = null;
+        try {
             // Check if the file's name contains invalid characters
-            if(fileName.contains("..")) {
+            if (fileName.contains("..")) {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
-            while((entry=zis.getNextEntry())!=null){
-                if(entry.getName().contains("jpeg") || entry.getName().contains("jpg") || entry.getName().contains("png")){
+            while ((entry = zis.getNextEntry()) != null) {
+                if (entry.getName().contains("jpeg") || entry.getName().contains("jpg") || entry.getName().contains("png")) {
                     Path targetLocation = this.fileStorageLocation.resolve(entry.getName());
-                    extractFile(zis,targetLocation.toString());
-                    pathNames.add(fileStorageProperties.getUploadDir() + File.separator + entry.getName());
-                }else{
+                    extractFile(zis, targetLocation.toString());
+                    String path = fileStorageProperties.getUploadDir().replaceAll("src/main/resources/static", "");
+                    pathNames.add(path + File.separator + entry.getName());
+                } else {
                     throw new FileStorageException("Sorry! Zip file contains non-image format files.");
                 }
             }
-        }catch (IOException ex){
+        } catch (IOException ex) {
             throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
         }
         return pathNames;
