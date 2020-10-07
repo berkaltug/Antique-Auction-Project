@@ -18,6 +18,7 @@ public class AntiqueResponseConverter {
         antiqueResponse.setLatestBid(antique.getLatestBid());
         antiqueResponse.setPastBids(bids);
         antiqueResponse.setImagePath(imagePaths);
+        antiqueResponse.setDeadline(antique.getDeadline().toString());
         return antiqueResponse;
     }
 }

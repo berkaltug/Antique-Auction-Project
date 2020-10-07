@@ -20,6 +20,7 @@ public class AntiqueRequest {
     @Digits(integer=7,fraction = 2,message = "price must have max 7 digit integer and 2 digit fraction")
     private BigDecimal price;
     private BigDecimal latestBid;
+    private String deadline;
     // image uploading should be optional i guess
     private MultipartFile image;
 
@@ -69,5 +70,13 @@ public class AntiqueRequest {
 
     public void setImage(MultipartFile image) {
         this.image = image;
+    }
+
+    public String getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
     }
 }

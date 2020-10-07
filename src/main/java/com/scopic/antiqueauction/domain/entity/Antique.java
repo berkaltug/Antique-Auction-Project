@@ -3,6 +3,7 @@ package com.scopic.antiqueauction.domain.entity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -15,6 +16,8 @@ public class Antique {
     private String description;
     private BigDecimal price;
     private BigDecimal latestBid;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime deadline;
 
     public void setId(Integer id) {
         this.id = id;
@@ -57,6 +60,14 @@ public class Antique {
         this.latestBid = latestBid;
     }
 
+    public LocalDateTime getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,12 +77,13 @@ public class Antique {
                 Objects.equals(name, antique.name) &&
                 Objects.equals(description, antique.description) &&
                 Objects.equals(price, antique.price) &&
-                Objects.equals(latestBid, antique.latestBid);
+                Objects.equals(latestBid, antique.latestBid) &&
+                Objects.equals(deadline, antique.deadline);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, latestBid);
+        return Objects.hash(id, name, description, price, latestBid, deadline);
     }
 
     @Override
@@ -82,6 +94,7 @@ public class Antique {
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", latestBid=" + latestBid +
+                ", deadline=" + deadline +
                 '}';
     }
 }

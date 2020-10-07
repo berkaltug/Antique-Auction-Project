@@ -12,6 +12,7 @@ public class AntiqueResponse {
     private BigDecimal latestBid;
     private List<BigDecimal> pastBids;
     private List<String> imagePath;
+    private String deadline;
 
     public Integer getId() {
         return id;
@@ -67,5 +68,13 @@ public class AntiqueResponse {
 
     public void setImagePath(List<String> imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public String getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
     }
 }
