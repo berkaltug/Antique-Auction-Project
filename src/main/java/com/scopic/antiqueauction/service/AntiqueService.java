@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 public interface AntiqueService {
@@ -17,5 +16,5 @@ public interface AntiqueService {
     Optional<Antique> addAntique(AntiqueRequest request) throws IOException;
     Optional<Antique> updateAntique(AntiqueRequest request) throws IOException;
     void deleteAntiqueById(Integer id);
-    Integer makeBid(BidRequest request);
+    void makeBid(BidRequest request);
 }

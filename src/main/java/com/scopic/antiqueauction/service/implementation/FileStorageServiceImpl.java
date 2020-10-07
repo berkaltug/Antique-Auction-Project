@@ -26,12 +26,13 @@ import java.util.zip.ZipInputStream;
 public class FileStorageServiceImpl implements FileStorageService {
     private static final int BUFFER_SIZE=1024;
     private final Path fileStorageLocation;
+    private final FileStorageProperties fileStorageProperties;
 
     @Autowired
     public FileStorageServiceImpl(FileStorageProperties fileStorageProperties)  {
+        this.fileStorageProperties=fileStorageProperties;
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
-
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
@@ -72,7 +73,7 @@ public class FileStorageServiceImpl implements FileStorageService {
                 if(entry.getName().contains("jpeg") || entry.getName().contains("jpg") || entry.getName().contains("png")){
                     Path targetLocation = this.fileStorageLocation.resolve(entry.getName());
                     extractFile(zis,targetLocation.toString());
-                    pathNames.add(targetLocation.toString());
+                    pathNames.add(fileStorageProperties.getUploadDir() + File.separator + entry.getName());
                 }else{
                     throw new FileStorageException("Sorry! Zip file contains non-image format files.");
                 }

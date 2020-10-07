@@ -5,6 +5,7 @@ import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.request.AntiqueRequest;
 import com.scopic.antiqueauction.domain.request.BidRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
+import com.scopic.antiqueauction.exceptions.InvalidBidException;
 import com.scopic.antiqueauction.service.AntiqueImageService;
 import com.scopic.antiqueauction.service.AntiqueService;
 import com.scopic.antiqueauction.service.FileStorageService;
@@ -22,10 +23,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/antique")
 public class AntiqueController {
-
     private AntiqueService antiqueService;
-
-
     @Autowired
     public AntiqueController(AntiqueService antiqueService) {
         this.antiqueService = antiqueService;
@@ -36,7 +34,7 @@ public class AntiqueController {
         return antiqueService.getAllAntiques(page, direction);
     }
 
-    @GetMapping("/see/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<?> getAntique(@PathVariable("id")Integer id){
         Optional<AntiqueResponse> optionalAntique=antiqueService.getAntiqueById(id);
         if(optionalAntique.isPresent()){
@@ -77,11 +75,11 @@ public class AntiqueController {
     }
     @PostMapping("/bid")
     public ResponseEntity<String> makeBid(@RequestBody BidRequest request){
-        Integer result = antiqueService.makeBid(request);
-        if(result == 1){
+        try{
+            antiqueService.makeBid(request);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        }else{
-            return new ResponseEntity<>("You can't make bid lower than current one.",HttpStatus.BAD_REQUEST);
+        }catch (InvalidBidException e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     };
 

@@ -8,8 +8,8 @@ import com.scopic.antiqueauction.domain.entity.PastBid;
 import com.scopic.antiqueauction.domain.request.AntiqueRequest;
 import com.scopic.antiqueauction.domain.request.BidRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
+import com.scopic.antiqueauction.exceptions.InvalidBidException;
 import com.scopic.antiqueauction.repository.AntiqueRepository;
-import com.scopic.antiqueauction.repository.PastBidRepository;
 import com.scopic.antiqueauction.service.AntiqueImageService;
 import com.scopic.antiqueauction.service.AntiqueService;
 import com.scopic.antiqueauction.service.FileStorageService;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -98,20 +97,23 @@ public class AntiqueServiceImpl implements AntiqueService {
         return antique;
     }
     @Override
-    public Integer makeBid(BidRequest request){
+    public void makeBid(BidRequest request){
         Optional<Antique> optionalAntique=antiqueRepository.findById(request.getId());
         //check if the request bid is the highest bid
-        if(optionalAntique.isPresent() && request.getBid().compareTo(pastBidService.getHighestBid(optionalAntique.get()))==1){
-            Antique antique=optionalAntique.get();
-            PastBid pastBid=new PastBid();
-            pastBid.setBid(request.getBid());
-            pastBid.setAntique(antique);
-            antique.setLatestBid(request.getBid());
-            pastBidService.insertPastBid(pastBid);
-            antiqueRepository.save(antique);
-            return 1;
-        }else{
-            return 0;
+        if(optionalAntique.isPresent()) {
+            if (request.getBid().compareTo(pastBidService.getHighestBid(optionalAntique.get())) == 1
+                    && request.getBid().compareTo(optionalAntique.get().getPrice()) == 1) {
+                Antique antique = optionalAntique.get();
+                PastBid pastBid = new PastBid();
+                pastBid.setBid(request.getBid());
+                pastBid.setAntique(antique);
+                antique.setLatestBid(request.getBid());
+                pastBidService.insertPastBid(pastBid);
+                antiqueRepository.save(antique);
+            } else {
+                throw new InvalidBidException("Your bid is invalid.Please make sure your bid is higher than current price.");
+            }
         }
     }
 }
+
