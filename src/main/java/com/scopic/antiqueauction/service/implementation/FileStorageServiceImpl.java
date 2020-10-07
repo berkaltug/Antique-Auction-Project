@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +24,7 @@ import java.util.zip.ZipInputStream;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
-
+    private static final int BUFFER_SIZE=1024;
     private final Path fileStorageLocation;
 
     @Autowired
@@ -72,8 +70,8 @@ public class FileStorageServiceImpl implements FileStorageService {
             }
             while((entry=zis.getNextEntry())!=null){
                 if(entry.getName().contains("jpeg") || entry.getName().contains("jpg") || entry.getName().contains("png")){
-                    Path targetLocation = this.fileStorageLocation.resolve(fileName);
-                    Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+                    Path targetLocation = this.fileStorageLocation.resolve(entry.getName());
+                    extractFile(zis,targetLocation.toString());
                     pathNames.add(targetLocation.toString());
                 }else{
                     throw new FileStorageException("Sorry! Zip file contains non-image format files.");
@@ -97,5 +95,15 @@ public class FileStorageServiceImpl implements FileStorageService {
         } catch (MalformedURLException ex) {
             throw new MyFileNotFoundException("File not found " + fileName, ex);
         }
+    }
+
+    private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+        byte[] bytesIn = new byte[BUFFER_SIZE];
+        int read = 0;
+        while ((read = zipIn.read(bytesIn)) != -1) {
+            bos.write(bytesIn, 0, read);
+        }
+        bos.close();
     }
 }

@@ -3,6 +3,7 @@ package com.scopic.antiqueauction.controller;
 import com.scopic.antiqueauction.domain.converter.AntiqueConverter;
 import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.request.AntiqueRequest;
+import com.scopic.antiqueauction.domain.request.BidRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
 import com.scopic.antiqueauction.service.AntiqueImageService;
 import com.scopic.antiqueauction.service.AntiqueService;
@@ -74,6 +75,15 @@ public class AntiqueController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_IMPLEMENTED);
         }
     }
+    @PostMapping("/bid")
+    public ResponseEntity<String> makeBid(@RequestBody BidRequest request){
+        Integer result = antiqueService.makeBid(request);
+        if(result == 1){
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>("You can't make bid lower than current one.",HttpStatus.BAD_REQUEST);
+        }
+    };
 
     @GetMapping("/delete/{id}")
     public ResponseEntity<String> deleteAntique(@PathVariable("id") Integer id){

@@ -2,6 +2,7 @@ package com.scopic.antiqueauction.service;
 
 import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.request.AntiqueRequest;
+import com.scopic.antiqueauction.domain.request.BidRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -16,4 +17,5 @@ public interface AntiqueService {
     Optional<Antique> addAntique(AntiqueRequest request) throws IOException;
     Optional<Antique> updateAntique(AntiqueRequest request) throws IOException;
     void deleteAntiqueById(Integer id);
+    Integer makeBid(BidRequest request);
 }

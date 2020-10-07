@@ -4,7 +4,9 @@ import com.scopic.antiqueauction.domain.converter.AntiqueConverter;
 import com.scopic.antiqueauction.domain.converter.AntiqueResponseConverter;
 import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.entity.AntiqueImage;
+import com.scopic.antiqueauction.domain.entity.PastBid;
 import com.scopic.antiqueauction.domain.request.AntiqueRequest;
+import com.scopic.antiqueauction.domain.request.BidRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
 import com.scopic.antiqueauction.repository.AntiqueRepository;
 import com.scopic.antiqueauction.repository.PastBidRepository;
@@ -94,5 +96,22 @@ public class AntiqueServiceImpl implements AntiqueService {
             });
         }
         return antique;
+    }
+    @Override
+    public Integer makeBid(BidRequest request){
+        Optional<Antique> optionalAntique=antiqueRepository.findById(request.getId());
+        //check if the request bid is the highest bid
+        if(optionalAntique.isPresent() && request.getBid().compareTo(pastBidService.getHighestBid(optionalAntique.get()))==1){
+            Antique antique=optionalAntique.get();
+            PastBid pastBid=new PastBid();
+            pastBid.setBid(request.getBid());
+            pastBid.setAntique(antique);
+            antique.setLatestBid(request.getBid());
+            pastBidService.insertPastBid(pastBid);
+            antiqueRepository.save(antique);
+            return 1;
+        }else{
+            return 0;
+        }
     }
 }
