@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class BidRequest {
-    @NotEmpty(message = "Antique id must be provided")
+    @NotNull(message = "Antique id must be provided")
     private Integer id;
     @NotNull(message = "bid must not be null")
     @DecimalMin(value="0.0",inclusive = false,message = "Bid must be higer than zero")

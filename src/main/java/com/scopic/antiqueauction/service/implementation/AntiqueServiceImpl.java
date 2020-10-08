@@ -1,12 +1,14 @@
 package com.scopic.antiqueauction.service.implementation;
 
 import com.scopic.antiqueauction.domain.converter.AntiqueConverter;
+import com.scopic.antiqueauction.domain.converter.AntiqueListingConverter;
 import com.scopic.antiqueauction.domain.converter.AntiqueResponseConverter;
 import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.entity.AntiqueImage;
 import com.scopic.antiqueauction.domain.entity.PastBid;
 import com.scopic.antiqueauction.domain.request.AntiqueRequest;
 import com.scopic.antiqueauction.domain.request.BidRequest;
+import com.scopic.antiqueauction.domain.response.AntiqueListingResponse;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
 import com.scopic.antiqueauction.exceptions.InvalidBidException;
 import com.scopic.antiqueauction.repository.AntiqueRepository;
@@ -15,7 +17,6 @@ import com.scopic.antiqueauction.service.AntiqueService;
 import com.scopic.antiqueauction.service.FileStorageService;
 import com.scopic.antiqueauction.service.PastBidService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,10 +33,10 @@ import java.util.stream.Collectors;
 @Service
 public class AntiqueServiceImpl implements AntiqueService {
 
-    private AntiqueRepository antiqueRepository;
-    private PastBidService pastBidService;
-    private AntiqueImageService antiqueImageService;
-    private FileStorageService fileStorageService;
+    private final AntiqueRepository antiqueRepository;
+    private final PastBidService pastBidService;
+    private final AntiqueImageService antiqueImageService;
+    private final FileStorageService fileStorageService;
 
     @Autowired
     public AntiqueServiceImpl(AntiqueRepository antiqueRepository, PastBidService pastBidService,AntiqueImageService antiqueImageService,FileStorageService fileStorageService) {
@@ -46,9 +47,16 @@ public class AntiqueServiceImpl implements AntiqueService {
     }
 
     @Override
-    public Page<Antique> getAllAntiques(int pageNo, Sort.Direction direction) {
+    public List<AntiqueListingResponse> getAllAntiques(int pageNo, Sort.Direction direction) {
         Pageable page= PageRequest.of(pageNo,10,Sort.by(direction,"price"));
-        return antiqueRepository.findAll(page);
+        return antiqueRepository.findAll(page).stream().map(antique -> {
+            List<String> imagePaths = antiqueImageService.getAntiqueImages(antique)
+                    .stream()
+                    .map(AntiqueImage::getPath)
+                    .collect(Collectors.toList());
+            return AntiqueListingConverter.convert(antique, imagePaths);
+        }).collect(Collectors.toList());
+
     }
 
     @Override
@@ -57,11 +65,11 @@ public class AntiqueServiceImpl implements AntiqueService {
         if(optionalAntique.isPresent()){
             List<String> imagePaths=antiqueImageService.getAntiqueImages(optionalAntique.get())
                     .stream()
-                    .map(antiqueImage -> antiqueImage.getPath())
+                    .map(AntiqueImage::getPath)
                     .collect(Collectors.toList());
             List<BigDecimal> bids=pastBidService.getPastBidsByAntique(optionalAntique.get())
                     .stream()
-                    .map(pastBid -> pastBid.getBid())
+                    .map(PastBid::getBid)
                     .collect(Collectors.toList());
             return  Optional.of(AntiqueResponseConverter.convert(optionalAntique.get(),bids,imagePaths));
         }else{
@@ -107,10 +115,14 @@ public class AntiqueServiceImpl implements AntiqueService {
     @Override
     public void makeBid(BidRequest request){
         Optional<Antique> optionalAntique=antiqueRepository.findById(request.getId());
-        //check if the request bid is the highest bid
+        LocalDateTime date=LocalDateTime.now();
+        //check if the request bid is the highest bid and date is before deadline
         if(optionalAntique.isPresent()) {
             if (request.getBid().compareTo(pastBidService.getHighestBid(optionalAntique.get())) == 1
                     && request.getBid().compareTo(optionalAntique.get().getPrice()) == 1) {
+                if(date.isAfter(optionalAntique.get().getDeadline())){
+                    throw new InvalidBidException("The auction has finished");
+                }
                 Antique antique = optionalAntique.get();
                 PastBid pastBid = new PastBid();
                 pastBid.setBid(request.getBid());
@@ -118,7 +130,7 @@ public class AntiqueServiceImpl implements AntiqueService {
                 antique.setLatestBid(request.getBid());
                 pastBidService.insertPastBid(pastBid);
                 antiqueRepository.save(antique);
-            } else {
+            } else{
                 throw new InvalidBidException("Your bid is invalid.Please make sure your bid is higher than current price.");
             }
         }

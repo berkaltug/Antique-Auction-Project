@@ -12,11 +12,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.csrf().disable().cors().and()
                 .authorizeRequests()
-                .antMatchers("/antique/list", "/antique/see/**").hasAnyRole("REGULAR","ADMIN")
-                .antMatchers("/antique/add","/antique/delete/**").hasRole("ADMIN")
+                .antMatchers("/antique/list", "/antique/see/**","/antique/login").hasAnyRole("REGULAR","ADMIN")
+                .antMatchers("/antique/add","/antique/delete/**","/antique/admin/login").hasRole("ADMIN")
                 .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/webjars/**","/static/**").permitAll()
                 .anyRequest().authenticated()
                 .and().headers().frameOptions().disable()//neccessary for h2-console
                 .and()

@@ -4,6 +4,7 @@ import com.scopic.antiqueauction.domain.converter.AntiqueConverter;
 import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.request.AntiqueRequest;
 import com.scopic.antiqueauction.domain.request.BidRequest;
+import com.scopic.antiqueauction.domain.response.AntiqueListingResponse;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
 import com.scopic.antiqueauction.exceptions.InvalidBidException;
 import com.scopic.antiqueauction.service.AntiqueImageService;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/antique")
 public class AntiqueController {
     private AntiqueService antiqueService;
@@ -29,12 +31,10 @@ public class AntiqueController {
     public AntiqueController(AntiqueService antiqueService) {
         this.antiqueService = antiqueService;
     }
-
     @GetMapping("/list")
-    public Page<Antique> getAllAntiques(@RequestParam("page") Integer page, @RequestParam("sort")Sort.Direction direction){
+    public List<AntiqueListingResponse> getAllAntiques(@RequestParam("page") Integer page, @RequestParam("sort")Sort.Direction direction){
         return antiqueService.getAllAntiques(page, direction);
     }
-
     @GetMapping("/get/{id}")
     public ResponseEntity<?> getAntique(@PathVariable("id")Integer id){
         Optional<AntiqueResponse> optionalAntique=antiqueService.getAntiqueById(id);
@@ -44,7 +44,6 @@ public class AntiqueController {
             return new ResponseEntity<>("Could not find an item for given id",HttpStatus.NOT_FOUND);
         }
     }
-
     @PostMapping("/add")
     public ResponseEntity<?> addAntique(@ModelAttribute @Valid AntiqueRequest request){
         try{
@@ -59,7 +58,6 @@ public class AntiqueController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_IMPLEMENTED);
         }
     }
-
     @PostMapping("/update")
     public ResponseEntity<?> updateAntique(@ModelAttribute @Valid AntiqueRequest request){
         try{
@@ -83,12 +81,16 @@ public class AntiqueController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     };
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteAntique(@PathVariable("id") Integer id){
         antiqueService.deleteAntiqueById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
+    @GetMapping("/login")
+    public void login(){
+    }
+    @GetMapping("/admin/login")
+    public void adminLogin(){
+    }
 
 }

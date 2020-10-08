@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 public class PastBidServiceImpl implements PastBidService {
-    private PastBidRepository pastBidRepository;
+    private final PastBidRepository pastBidRepository;
     @Autowired
     public PastBidServiceImpl(PastBidRepository pastBidRepository) {
         this.pastBidRepository = pastBidRepository;

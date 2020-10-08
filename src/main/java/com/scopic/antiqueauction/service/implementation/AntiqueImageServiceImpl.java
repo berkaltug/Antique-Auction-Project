@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class AntiqueImageServiceImpl implements AntiqueImageService {
 
-    private AntiqueImageRepository antiqueImageRepository;
+    private final AntiqueImageRepository antiqueImageRepository;
 
     @Autowired
     public AntiqueImageServiceImpl(AntiqueImageRepository antiqueImageRepository) {
