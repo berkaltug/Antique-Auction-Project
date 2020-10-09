@@ -12,7 +12,7 @@ public class AntiqueListingConverter {
         response.setId(antique.getId());
         response.setName(antique.getName());
         response.setDescription(antique.getDescription());
-        response.setDisplayImage(images.get(0));
+        response.setDisplayImage((!images.isEmpty() ? images.get(0) : null));
         response.setPrice((antique.getLatestBid()==null) ? antique.getPrice() : antique.getLatestBid());
         response.setDeadline(antique.getDeadline().toString());
         return response;
