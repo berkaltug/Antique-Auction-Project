@@ -35,6 +35,11 @@ public class AntiqueController {
     public Page<AntiqueListingResponse> getAllAntiques(@RequestParam("page") Integer page, @RequestParam("sort")Sort.Direction direction){
         return antiqueService.getAllAntiques(page, direction);
     }
+
+    @GetMapping("/search")
+    public Page<AntiqueListingResponse> searchAllAntiques(@RequestParam("page") Integer page, @RequestParam("str")String str){
+        return antiqueService.getAllAntiquesLike(page, str);
+    }
     @GetMapping("/get/{id}")
     public ResponseEntity<?> getAntique(@PathVariable("id")Integer id){
         Optional<AntiqueResponse> optionalAntique=antiqueService.getAntiqueById(id);

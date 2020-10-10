@@ -14,6 +14,7 @@ import java.util.Optional;
 
 public interface AntiqueService {
     Page<AntiqueListingResponse> getAllAntiques(int pageNo, Sort.Direction direction);
+    Page<AntiqueListingResponse> getAllAntiquesLike(int pageNo,String str);
     Optional<AntiqueResponse> getAntiqueById(Integer id);
     Optional<Antique> addAntique(AntiqueRequest request) throws IOException;
     Optional<Antique> updateAntique(AntiqueRequest request) throws IOException;

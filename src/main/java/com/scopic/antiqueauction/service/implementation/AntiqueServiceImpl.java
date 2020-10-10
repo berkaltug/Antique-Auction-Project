@@ -62,6 +62,20 @@ public class AntiqueServiceImpl implements AntiqueService {
     }
 
     @Override
+    public Page<AntiqueListingResponse> getAllAntiquesLike(int pageNo,String str) {
+        Pageable pageable= PageRequest.of(pageNo,10,Sort.by(Sort.Direction.ASC,"price"));
+        return antiqueRepository.findAllByNameContaining(str,pageable).map(antique ->
+                {
+                    List<String> imagePaths = antiqueImageService.getAntiqueImages(antique)
+                            .stream()
+                            .map(AntiqueImage::getPath)
+                            .collect(Collectors.toList());
+                    return AntiqueListingConverter.convert(antique, imagePaths);
+                }
+        );
+    }
+
+    @Override
     public Optional<AntiqueResponse> getAntiqueById(Integer id) {
         Optional<Antique> optionalAntique = antiqueRepository.findById(id);
         if(optionalAntique.isPresent()){
