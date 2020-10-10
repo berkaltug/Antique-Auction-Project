@@ -32,7 +32,7 @@ public class AntiqueController {
         this.antiqueService = antiqueService;
     }
     @GetMapping("/list")
-    public List<AntiqueListingResponse> getAllAntiques(@RequestParam("page") Integer page, @RequestParam("sort")Sort.Direction direction){
+    public Page<AntiqueListingResponse> getAllAntiques(@RequestParam("page") Integer page, @RequestParam("sort")Sort.Direction direction){
         return antiqueService.getAllAntiques(page, direction);
     }
     @GetMapping("/get/{id}")

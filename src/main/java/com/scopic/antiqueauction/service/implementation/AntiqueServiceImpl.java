@@ -17,6 +17,7 @@ import com.scopic.antiqueauction.service.AntiqueService;
 import com.scopic.antiqueauction.service.FileStorageService;
 import com.scopic.antiqueauction.service.PastBidService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -47,16 +48,17 @@ public class AntiqueServiceImpl implements AntiqueService {
     }
 
     @Override
-    public List<AntiqueListingResponse> getAllAntiques(int pageNo, Sort.Direction direction) {
-        Pageable page= PageRequest.of(pageNo,10,Sort.by(direction,"price"));
-        return antiqueRepository.findAll(page).stream().map(antique -> {
-            List<String> imagePaths = antiqueImageService.getAntiqueImages(antique)
-                    .stream()
-                    .map(AntiqueImage::getPath)
-                    .collect(Collectors.toList());
-            return AntiqueListingConverter.convert(antique, imagePaths);
-        }).collect(Collectors.toList());
-
+    public Page<AntiqueListingResponse> getAllAntiques(int pageNo, Sort.Direction direction) {
+        Pageable pageable= PageRequest.of(pageNo,10,Sort.by(direction,"price"));
+        return antiqueRepository.findAll(pageable).map(antique ->
+            {
+                List<String> imagePaths = antiqueImageService.getAntiqueImages(antique)
+                        .stream()
+                        .map(AntiqueImage::getPath)
+                        .collect(Collectors.toList());
+                return AntiqueListingConverter.convert(antique, imagePaths);
+            }
+        );
     }
 
     @Override
