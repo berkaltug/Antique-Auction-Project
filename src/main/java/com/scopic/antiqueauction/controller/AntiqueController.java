@@ -6,6 +6,7 @@ import com.scopic.antiqueauction.domain.request.AntiqueRequest;
 import com.scopic.antiqueauction.domain.request.BidRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueListingResponse;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
+import com.scopic.antiqueauction.exceptions.FileStorageException;
 import com.scopic.antiqueauction.exceptions.InvalidBidException;
 import com.scopic.antiqueauction.service.AntiqueImageService;
 import com.scopic.antiqueauction.service.AntiqueService;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,7 +30,7 @@ import java.util.Optional;
 public class AntiqueController {
     private AntiqueService antiqueService;
     @Autowired
-    public AntiqueController(AntiqueService antiqueService) {
+    public AntiqueController(AntiqueService antiqueService) throws FileStorageException {
         this.antiqueService = antiqueService;
     }
     @GetMapping("/list")
@@ -50,18 +52,14 @@ public class AntiqueController {
         }
     }
     @PostMapping("/add")
-    public ResponseEntity<?> addAntique(@ModelAttribute @Valid AntiqueRequest request){
-        try{
+    public ResponseEntity<?> addAntique(@ModelAttribute @Valid AntiqueRequest request) throws FileStorageException,IOException {
+
             Optional<Antique> optionalAntique = antiqueService.addAntique(request);
             if(optionalAntique.isPresent()){
                 return new ResponseEntity<>(HttpStatus.CREATED);
             }else{
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>("Some Internal Server Error Occured",HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_IMPLEMENTED);
-        }
     }
     @PostMapping("/update")
     public ResponseEntity<?> updateAntique(@ModelAttribute @Valid AntiqueRequest request){
@@ -79,12 +77,8 @@ public class AntiqueController {
     }
     @PostMapping("/bid")
     public ResponseEntity<String> makeBid(@RequestBody @Valid BidRequest request){
-        try{
             antiqueService.makeBid(request);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        }catch (InvalidBidException e){
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
-        }
     };
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteAntique(@PathVariable("id") Integer id){
