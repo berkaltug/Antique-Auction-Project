@@ -83,7 +83,8 @@ public class AntiqueController {
             antiqueService.makeBid(request);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }catch (InvalidBidException e){
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_GATEWAY);
         }
     };
     @DeleteMapping("/delete/{id}")
