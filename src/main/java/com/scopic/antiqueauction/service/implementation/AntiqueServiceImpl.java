@@ -10,6 +10,7 @@ import com.scopic.antiqueauction.domain.request.AntiqueRequest;
 import com.scopic.antiqueauction.domain.request.BidRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueListingResponse;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
+import com.scopic.antiqueauction.exceptions.FileStorageException;
 import com.scopic.antiqueauction.exceptions.InvalidBidException;
 import com.scopic.antiqueauction.repository.AntiqueRepository;
 import com.scopic.antiqueauction.service.AntiqueImageService;
@@ -40,7 +41,7 @@ public class AntiqueServiceImpl implements AntiqueService {
     private final FileStorageService fileStorageService;
 
     @Autowired
-    public AntiqueServiceImpl(AntiqueRepository antiqueRepository, PastBidService pastBidService,AntiqueImageService antiqueImageService,FileStorageService fileStorageService) {
+    public AntiqueServiceImpl(AntiqueRepository antiqueRepository, PastBidService pastBidService,AntiqueImageService antiqueImageService,FileStorageService fileStorageService) throws FileStorageException {
         this.antiqueRepository = antiqueRepository;
         this.pastBidService = pastBidService;
         this.antiqueImageService = antiqueImageService;
@@ -114,7 +115,7 @@ public class AntiqueServiceImpl implements AntiqueService {
         });
     }
 
-    private Optional<Antique> addOrUpdateAntique(AntiqueRequest request) throws IOException {
+    private Optional<Antique> addOrUpdateAntique(AntiqueRequest request) throws IOException,FileStorageException {
         List<String> pathList=null;
         Optional<Antique> antique=Optional.of(antiqueRepository.save(AntiqueConverter.convert(request)));
         if (antique.isPresent() && request.getImage() != null) {

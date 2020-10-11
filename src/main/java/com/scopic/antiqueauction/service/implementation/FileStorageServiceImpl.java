@@ -59,7 +59,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
-    public List<String> storeZip(MultipartFile file) throws IOException {
+    public List<String> storeZip(MultipartFile file) throws IOException,FileStorageException {
         List<String> pathNames = new LinkedList<String>();
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         byte[] bytes = file.getBytes();
