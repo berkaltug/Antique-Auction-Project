@@ -17,7 +17,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/antique/list", "/antique/see/**","/antique/login").hasAnyRole("REGULAR","ADMIN")
                 .antMatchers("/antique/add","/antique/delete/**","/antique/admin/login").hasRole("ADMIN")
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/webjars/**","/static/**","/static/images/**","/resources/static/images/**","/resources/**","/images/**").permitAll()
+                .antMatchers("/static/**","/static/images/**","/resources/static/images/**","/resources/**","/images/**","/media/**").permitAll()
                 .anyRequest().authenticated()
                 .and().headers().frameOptions().disable()//neccessary for h2-console
                 .and()
