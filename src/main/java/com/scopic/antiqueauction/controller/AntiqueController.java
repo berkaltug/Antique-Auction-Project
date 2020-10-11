@@ -39,8 +39,8 @@ public class AntiqueController {
     }
 
     @GetMapping("/search")
-    public Page<AntiqueListingResponse> searchAllAntiques(@RequestParam("page") Integer page, @RequestParam("str")String str){
-        return antiqueService.getAllAntiquesLike(page, str);
+    public Page<AntiqueListingResponse> searchAllAntiques(@RequestParam("page") Integer page,@RequestParam("sort")Sort.Direction direction, @RequestParam("str")String str){
+        return antiqueService.getAllAntiquesLike(page,direction, str);
     }
     @GetMapping("/get/{id}")
     public ResponseEntity<?> getAntique(@PathVariable("id")Integer id){
@@ -52,8 +52,7 @@ public class AntiqueController {
         }
     }
     @PostMapping("/add")
-    public ResponseEntity<?> addAntique(@ModelAttribute @Valid AntiqueRequest request) throws FileStorageException,IOException {
-
+    public ResponseEntity<?> addAntique(@ModelAttribute @Valid AntiqueRequest request) throws IOException {
             Optional<Antique> optionalAntique = antiqueService.addAntique(request);
             if(optionalAntique.isPresent()){
                 return new ResponseEntity<>(HttpStatus.CREATED);
@@ -62,18 +61,13 @@ public class AntiqueController {
             }
     }
     @PostMapping("/update")
-    public ResponseEntity<?> updateAntique(@ModelAttribute @Valid AntiqueRequest request){
-        try{
+    public ResponseEntity<?> updateAntique(@ModelAttribute @Valid AntiqueRequest request) throws IOException{
             Optional<Antique> optionalAntique = antiqueService.updateAntique(request);
             if(optionalAntique.isPresent()){
                 return new ResponseEntity<>(HttpStatus.CREATED);
             }else{
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_IMPLEMENTED);
-        }
     }
     @PostMapping("/bid")
     public ResponseEntity<String> makeBid(@RequestBody @Valid BidRequest request){

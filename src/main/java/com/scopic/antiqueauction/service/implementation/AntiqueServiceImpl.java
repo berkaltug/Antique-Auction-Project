@@ -50,7 +50,7 @@ public class AntiqueServiceImpl implements AntiqueService {
 
     @Override
     public Page<AntiqueListingResponse> getAllAntiques(int pageNo, Sort.Direction direction) {
-        Pageable pageable= PageRequest.of(pageNo,10,Sort.by(direction,"price"));
+        Pageable pageable= PageRequest.of(pageNo-1,10,Sort.by(direction,"price"));
         return antiqueRepository.findAll(pageable).map(antique ->
             {
                 List<String> imagePaths = antiqueImageService.getAntiqueImages(antique)
@@ -63,8 +63,8 @@ public class AntiqueServiceImpl implements AntiqueService {
     }
 
     @Override
-    public Page<AntiqueListingResponse> getAllAntiquesLike(int pageNo,String str) {
-        Pageable pageable= PageRequest.of(pageNo,10,Sort.by(Sort.Direction.ASC,"price"));
+    public Page<AntiqueListingResponse> getAllAntiquesLike(int pageNo,Sort.Direction direction , String str) {
+        Pageable pageable= PageRequest.of(pageNo-1,10,Sort.by(direction,"price"));
         return antiqueRepository.findAllByNameContaining(str,pageable).map(antique ->
                 {
                     List<String> imagePaths = antiqueImageService.getAntiqueImages(antique)
@@ -115,7 +115,7 @@ public class AntiqueServiceImpl implements AntiqueService {
         });
     }
 
-    private Optional<Antique> addOrUpdateAntique(AntiqueRequest request) throws IOException,FileStorageException {
+    private Optional<Antique> addOrUpdateAntique(AntiqueRequest request) throws IOException {
         List<String> pathList=null;
         Optional<Antique> antique=Optional.of(antiqueRepository.save(AntiqueConverter.convert(request)));
         if (antique.isPresent() && request.getImage() != null) {
