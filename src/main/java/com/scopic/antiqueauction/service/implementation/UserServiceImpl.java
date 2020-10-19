@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +27,7 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
-
+    @Transactional
     @Override
     public void save(User user) {
         User existingUser=this.findByEmail(user.getEmail());
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
         }else if (!user.getPassword().contains("$2a$10$")) {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
-        user.setRoles(new ArrayList<Role>(Arrays.asList(roleRepository.getOne(2)))); // direk user rolunde ekliyor
+        user.setRoles(new ArrayList<Role>(Arrays.asList(roleRepository.getOne(-2)))); // direk user rolunde ekliyor
         userRepository.save(user);
     }
 

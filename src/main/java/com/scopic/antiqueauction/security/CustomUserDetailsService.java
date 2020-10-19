@@ -1,9 +1,7 @@
 package com.scopic.antiqueauction.security;
 
 import com.scopic.antiqueauction.domain.entity.User;
-import com.scopic.antiqueauction.service.UserService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.scopic.antiqueauction.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -16,11 +14,11 @@ import java.util.Collection;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Autowired
-    public CustomUserDetailsService(UserService userService) {
-        this.userService = userService;
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -29,13 +27,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         boolean credentialsNonExpired = true;
         boolean accountNonLocked = true;
         boolean isEnabled = true;
-        User user = userService.findByUsername(username);
+        User user = userRepository.findByUsername(username);
 
         if (user == null) {
             throw new UsernameNotFoundException(username + " not found");
         }
 
-        org.springframework.security.core.userdetails.User authUser = new org.springframework.security.core.userdetails.User(
+         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
                 isEnabled, //is enabled field
@@ -43,8 +41,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 credentialsNonExpired,
                 accountNonLocked,
                 getAuthorities(user));
-
-        return authUser;
     }
 
 
@@ -53,7 +49,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .stream()
                 .map((role) -> role.getName())
                 .toArray(String[]::new);
-        Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(userRoles);
-        return authorities;
+        return AuthorityUtils.createAuthorityList(userRoles);
     }
 }

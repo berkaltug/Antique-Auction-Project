@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -15,7 +16,7 @@ import java.io.IOException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({FileStorageException.class,InvalidBidException.class, BindException.class})
+    @ExceptionHandler({FileStorageException.class,InvalidBidException.class, BindException.class, MethodArgumentNotValidException.class,RuntimeException.class})
     public final ResponseEntity<String> handleException(Exception ex, WebRequest request){
         if(ex instanceof FileStorageException){
             FileStorageException fileStorageException=(FileStorageException) ex;
@@ -28,6 +29,11 @@ public class GlobalExceptionHandler {
         if(ex instanceof BindException){
             BindException bindException = (BindException) ex;
             String message=bindException.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+            return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+        }
+        if(ex instanceof MethodArgumentNotValidException){
+            MethodArgumentNotValidException exception = (MethodArgumentNotValidException) ex;
+            String message= exception.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
             return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
         }
         if(ex instanceof IOException){

@@ -350,7 +350,7 @@ VALUES
 -50, 'Portrait', 'Lorem ipsum dolor sit amet consectetur adipiscing elit Maecenas sit amet quam dapibus suscipit nibh vitae venenatis lectus Donec ac.', 1980
 );
 
-
+INSERT INTO role(id,name) VALUES (-1,'ROLE_ADMIN'),(-2,'ROLE_REGULAR');
 
 
 update antique set deadline = '2020-10-26T16:12:30' where antique.id<51;

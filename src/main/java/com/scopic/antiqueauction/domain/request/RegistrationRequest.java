@@ -8,15 +8,15 @@ import javax.validation.constraints.NotBlank;
 public class RegistrationRequest {
 
     @NotBlank(message="username should not be blank")
-    @Min(value=8,message = "username can not be shorter than 8 character")
-    @Max(value=16,message="username can not be longer than 16 character")
+//    @Min(value=8,message = "username can not be shorter than 8 character")
+//    @Max(value=16,message="username can not be longer than 16 character")
     private String username;
     @NotBlank(message = "email should not be blank")
     @Email(message = "email is in the wrong format")
     private String email;
     @NotBlank(message = "password should not be blank")
-    @Max(value=16,message="password can not be longer than 16 character")
-    @Min(value=8,message = "password can not be shorter than 8 character")
+//    @Max(value=16,message="password can not be longer than 16 character")
+//    @Min(value=8,message = "password can not be shorter than 8 character")
     private String password;
 
     public String getUsername() {
@@ -42,4 +42,5 @@ public class RegistrationRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }
