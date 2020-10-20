@@ -351,6 +351,12 @@ VALUES
 );
 
 INSERT INTO role(id,name) VALUES (-1,'ROLE_ADMIN'),(-2,'ROLE_REGULAR');
+-- user/user credentials
+INSERT INTO user_table(id,username,email,password) values(-1,'user','asdasd@gmail.com','$2a$10$d4HHoJcDRvVz3UfJsH8PbunB5tnKSv5cEviXyxhGM6DJCkllLpg76');
+-- admin/admin credentials
+INSERT INTO user_table(id,username,email,password) values(-2,'admin','asdasdasd@gmail.com','$2a$10$Fq5vMdi2lzFM1B.2Istm9Oi90gnS2YN5WRm9akGWhP2ewr10zDCaC');
+
+INSERT INTO user_role(user_id,role_id) VALUES (-2,-1),(-1,-2);
 
 
 update antique set deadline = '2020-10-26T16:12:30' where antique.id<51;
