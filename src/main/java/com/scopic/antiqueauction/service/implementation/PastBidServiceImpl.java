@@ -5,6 +5,9 @@ import com.scopic.antiqueauction.domain.entity.PastBid;
 import com.scopic.antiqueauction.repository.PastBidRepository;
 import com.scopic.antiqueauction.service.PastBidService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.rest.core.event.AfterCreateEvent;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,14 +17,17 @@ import java.util.List;
 @Service
 public class PastBidServiceImpl implements PastBidService {
     private final PastBidRepository pastBidRepository;
-    @Autowired
-    public PastBidServiceImpl(PastBidRepository pastBidRepository) {
+    private final SimpMessagingTemplate msgTemplate;
+
+    public PastBidServiceImpl(PastBidRepository pastBidRepository, SimpMessagingTemplate msgTemplate) {
         this.pastBidRepository = pastBidRepository;
+        this.msgTemplate = msgTemplate;
     }
 
     @Override
     public void insertPastBid(PastBid pastBid) {
         pastBidRepository.save(pastBid);
+        msgTemplate.convertAndSend("/antique-topic/bid",pastBid);
     }
 
     @Override
