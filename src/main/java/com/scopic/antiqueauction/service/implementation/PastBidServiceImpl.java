@@ -27,7 +27,7 @@ public class PastBidServiceImpl implements PastBidService {
     @Override
     public void insertPastBid(PastBid pastBid) {
         pastBidRepository.save(pastBid);
-        msgTemplate.convertAndSend("/antique-topic/bid",pastBid);
+        msgTemplate.convertAndSend("/antique-topic/bid/"+pastBid.getAntique().getId(),pastBid);
     }
 
     @Override

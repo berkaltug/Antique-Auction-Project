@@ -13,10 +13,7 @@ import com.scopic.antiqueauction.domain.response.AntiqueResponse;
 import com.scopic.antiqueauction.exceptions.FileStorageException;
 import com.scopic.antiqueauction.exceptions.InvalidBidException;
 import com.scopic.antiqueauction.repository.AntiqueRepository;
-import com.scopic.antiqueauction.service.AntiqueImageService;
-import com.scopic.antiqueauction.service.AntiqueService;
-import com.scopic.antiqueauction.service.FileStorageService;
-import com.scopic.antiqueauction.service.PastBidService;
+import com.scopic.antiqueauction.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,13 +36,14 @@ public class AntiqueServiceImpl implements AntiqueService {
     private final PastBidService pastBidService;
     private final AntiqueImageService antiqueImageService;
     private final FileStorageService fileStorageService;
-
+    private final UserService userService;
     @Autowired
-    public AntiqueServiceImpl(AntiqueRepository antiqueRepository, PastBidService pastBidService,AntiqueImageService antiqueImageService,FileStorageService fileStorageService) throws FileStorageException {
+    public AntiqueServiceImpl(AntiqueRepository antiqueRepository, PastBidService pastBidService, AntiqueImageService antiqueImageService, FileStorageService fileStorageService, UserService userService) {
         this.antiqueRepository = antiqueRepository;
         this.pastBidService = pastBidService;
         this.antiqueImageService = antiqueImageService;
-        this.fileStorageService=fileStorageService;
+        this.fileStorageService = fileStorageService;
+        this.userService = userService;
     }
 
     @Override
@@ -144,6 +142,7 @@ public class AntiqueServiceImpl implements AntiqueService {
                 PastBid pastBid = new PastBid();
                 pastBid.setBid(request.getBid());
                 pastBid.setAntique(antique);
+                pastBid.setUser(userService.findLoggedInUser());
                 antique.setLatestBid(request.getBid());
                 pastBidService.insertPastBid(pastBid);
                 antiqueRepository.save(antique);
