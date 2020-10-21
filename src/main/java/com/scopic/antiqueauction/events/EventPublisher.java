@@ -1,5 +1,6 @@
 package com.scopic.antiqueauction.events;
 
+import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.entity.PastBid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,4 +17,6 @@ public class EventPublisher {
     public void publishBidMadeEvent(PastBid bid){
         publisher.publishEvent(new BidMadeEvent(this,bid));
     }
+
+    public void publishDeadlineEvent(Antique antique){publisher.publishEvent(new DeadlineEvent(this,antique));}
 }

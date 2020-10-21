@@ -1,6 +1,7 @@
 package com.scopic.antiqueauction.events;
 
 import com.scopic.antiqueauction.domain.converter.PastBidResponseConverter;
+import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.entity.PastBid;
 import com.scopic.antiqueauction.domain.entity.User;
 import com.scopic.antiqueauction.service.PastBidService;
@@ -36,6 +37,11 @@ public class  GlobalEventListener{
         List<PastBid> antiqueBids=pastBidService.getPastBidsByAntique(bid.getAntique());
         Set<User> users=antiqueBids.stream().map(PastBid::getUser).collect(Collectors.toSet());
         sendNotificationMails(bid,users);
+    }
+    @EventListener
+    public void handleDeadlineEvent(DeadlineEvent deadlineEvent){
+        Antique antique=deadlineEvent.getAntique();
+        System.out.println(antique.getId() +" "+ antique.getName() + " antique deadline finished");
     }
 
     private void sendNotificationMails(PastBid bid,Set<User> users){
