@@ -143,6 +143,7 @@ public class AntiqueServiceImpl implements AntiqueService {
                 pastBid.setBid(request.getBid());
                 pastBid.setAntique(antique);
                 pastBid.setUser(userService.findLoggedInUser());
+                pastBid.setTime(date);
                 antique.setLatestBid(request.getBid());
                 pastBidService.insertPastBid(pastBid);
                 antiqueRepository.save(antique);

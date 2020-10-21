@@ -1,5 +1,6 @@
 package com.scopic.antiqueauction.events;
 
+import com.scopic.antiqueauction.domain.converter.PastBidResponseConverter;
 import com.scopic.antiqueauction.domain.entity.PastBid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -18,6 +19,6 @@ public class  GlobalEventListener{
     @EventListener
     public void handleBidMadeEvent(BidMadeEvent bidMadeEvent){
         PastBid bid = bidMadeEvent.getBid();
-        messagingTemplate.convertAndSend("/antique-topic/bid/"+bid.getAntique().getId(),bid);
+        messagingTemplate.convertAndSend("/antique-topic/bid/"+bid.getAntique().getId(), PastBidResponseConverter.convert(bid));
     }
 }
