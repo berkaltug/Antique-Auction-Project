@@ -2,6 +2,7 @@ package com.scopic.antiqueauction.service.implementation;
 
 import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.entity.PastBid;
+import com.scopic.antiqueauction.domain.entity.User;
 import com.scopic.antiqueauction.events.EventPublisher;
 import com.scopic.antiqueauction.repository.PastBidRepository;
 import com.scopic.antiqueauction.service.PastBidService;
@@ -51,5 +52,15 @@ public class PastBidServiceImpl implements PastBidService {
     @Override
     public void deleteAllByAntique(Antique antique) {
         pastBidRepository.deleteAllByAntique(antique);
+    }
+
+    @Override
+    public List<PastBid> getUserBids(User user) {
+        return pastBidRepository.findAllByUser(user);
+    }
+
+    @Override
+    public List<PastBid> getUserBidsForAntique(Antique antique, User user) {
+        return pastBidRepository.findAllByAntiqueAndUser(antique, user);
     }
 }

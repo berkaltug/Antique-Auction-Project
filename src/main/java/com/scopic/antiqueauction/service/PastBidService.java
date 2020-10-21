@@ -2,6 +2,7 @@ package com.scopic.antiqueauction.service;
 
 import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.entity.PastBid;
+import com.scopic.antiqueauction.domain.entity.User;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -12,4 +13,6 @@ public interface PastBidService {
     List<PastBid> getPastBidsByAntique(Antique antique);
     BigDecimal getHighestBid(Antique antique);
     void deleteAllByAntique(Antique antique);
+    List<PastBid> getUserBids(User user);
+    List<PastBid> getUserBidsForAntique(Antique antique,User user);
 }

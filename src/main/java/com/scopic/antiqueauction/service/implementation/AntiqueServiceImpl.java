@@ -10,6 +10,7 @@ import com.scopic.antiqueauction.domain.request.AntiqueRequest;
 import com.scopic.antiqueauction.domain.request.BidRequest;
 import com.scopic.antiqueauction.domain.response.AntiqueListingResponse;
 import com.scopic.antiqueauction.domain.response.AntiqueResponse;
+import com.scopic.antiqueauction.events.DeadlineTask;
 import com.scopic.antiqueauction.exceptions.FileStorageException;
 import com.scopic.antiqueauction.exceptions.InvalidBidException;
 import com.scopic.antiqueauction.repository.AntiqueRepository;
@@ -19,12 +20,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,13 +41,16 @@ public class AntiqueServiceImpl implements AntiqueService {
     private final AntiqueImageService antiqueImageService;
     private final FileStorageService fileStorageService;
     private final UserService userService;
+    private final ThreadPoolTaskScheduler taskScheduler;
+
     @Autowired
-    public AntiqueServiceImpl(AntiqueRepository antiqueRepository, PastBidService pastBidService, AntiqueImageService antiqueImageService, FileStorageService fileStorageService, UserService userService) {
+    public AntiqueServiceImpl(AntiqueRepository antiqueRepository, PastBidService pastBidService, AntiqueImageService antiqueImageService, FileStorageService fileStorageService, UserService userService, ThreadPoolTaskScheduler taskScheduler) {
         this.antiqueRepository = antiqueRepository;
         this.pastBidService = pastBidService;
         this.antiqueImageService = antiqueImageService;
         this.fileStorageService = fileStorageService;
         this.userService = userService;
+        this.taskScheduler = taskScheduler;
     }
 
     @Override
@@ -116,14 +123,18 @@ public class AntiqueServiceImpl implements AntiqueService {
     private Optional<Antique> addOrUpdateAntique(AntiqueRequest request) throws IOException {
         List<String> pathList=null;
         Optional<Antique> antique=Optional.of(antiqueRepository.save(AntiqueConverter.convert(request)));
-        if (antique.isPresent() && request.getImage() != null) {
-            pathList= fileStorageService.storeZip(request.getImage());
-            pathList.forEach(path-> {
-                AntiqueImage antiqueImage=new AntiqueImage();
-                antiqueImage.setaAntique(antique.get());
-                antiqueImage.setPath(path);
-                antiqueImageService.addAntiqueImage(antiqueImage);
-            });
+        if (antique.isPresent()) {
+            taskScheduler.schedule(new DeadlineTask(), Date.from(antique.get().getDeadline().atZone(ZoneId.systemDefault()).toInstant()));
+            System.out.println("scheduled at :"+ Date.from(antique.get().getDeadline().atZone(ZoneId.systemDefault()).toInstant()).toString());
+            if(request.getImage()!=null){
+                pathList= fileStorageService.storeZip(request.getImage());
+                pathList.forEach(path-> {
+                    AntiqueImage antiqueImage=new AntiqueImage();
+                    antiqueImage.setaAntique(antique.get());
+                    antiqueImage.setPath(path);
+                    antiqueImageService.addAntiqueImage(antiqueImage);
+                });
+            }
         }
         return antique;
     }
