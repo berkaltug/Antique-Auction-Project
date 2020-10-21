@@ -2,6 +2,7 @@ package com.scopic.antiqueauction.service.implementation;
 
 import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.entity.PastBid;
+import com.scopic.antiqueauction.events.EventPublisher;
 import com.scopic.antiqueauction.repository.PastBidRepository;
 import com.scopic.antiqueauction.service.PastBidService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +18,17 @@ import java.util.List;
 @Service
 public class PastBidServiceImpl implements PastBidService {
     private final PastBidRepository pastBidRepository;
-    private final SimpMessagingTemplate msgTemplate;
+    private final EventPublisher eventPublisher;
 
-    public PastBidServiceImpl(PastBidRepository pastBidRepository, SimpMessagingTemplate msgTemplate) {
+    public PastBidServiceImpl(PastBidRepository pastBidRepository, EventPublisher eventPublisher) {
         this.pastBidRepository = pastBidRepository;
-        this.msgTemplate = msgTemplate;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
     public void insertPastBid(PastBid pastBid) {
         pastBidRepository.save(pastBid);
-        msgTemplate.convertAndSend("/antique-topic/bid/"+pastBid.getAntique().getId(),pastBid);
+        eventPublisher.publishBidMadeEvent(pastBid);
     }
 
     @Override
