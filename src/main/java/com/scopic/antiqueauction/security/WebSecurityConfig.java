@@ -28,7 +28,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().cors().and()
                 .authorizeRequests()
-                .antMatchers("/antique/list", "/antique/see/**","/antique/login").hasAnyRole("REGULAR","ADMIN")
+                .antMatchers("/antique/list", "/antique/see/**","/antique/login",
+                        "/antique/bid","/antique/get/**",
+                        "/sale/user-sales","/sale/antique/**").hasAnyRole("REGULAR","ADMIN")
                 .antMatchers("/antique/add","/antique/delete/**","/antique/admin/login").hasRole("ADMIN")
                 .antMatchers("/h2-console/**","/user/**","/antique-app-ws/**").permitAll()
                 .antMatchers("/static/**","/static/images/**","/resources/static/images/**","/resources/**","/images/**","/media/**").permitAll()
