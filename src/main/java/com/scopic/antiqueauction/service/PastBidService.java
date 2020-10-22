@@ -12,6 +12,7 @@ public interface PastBidService {
     void insertPastBid(PastBid pastBid);
     List<PastBid> getPastBidsByAntique(Antique antique);
     BigDecimal getHighestBid(Antique antique);
+    PastBid getHighestPastBid(Antique antique);
     void deleteAllByAntique(Antique antique);
     List<PastBid> getUserBids(User user);
     List<PastBid> getUserBidsForAntique(Antique antique,User user);

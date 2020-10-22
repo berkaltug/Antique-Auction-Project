@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -47,6 +49,12 @@ public class PastBidServiceImpl implements PastBidService {
             }
         }
         return highest;
+    }
+    @Override
+    public PastBid getHighestPastBid(Antique antique){
+        List<PastBid> pastBids=pastBidRepository.findAllByAntique(antique);
+        pastBids.sort(Comparator.comparing(PastBid::getBid).reversed());
+        return pastBids.get(0);
     }
 
     @Override

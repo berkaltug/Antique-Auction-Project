@@ -20,6 +20,17 @@ public class Sale {
     private User buyer;
     private LocalDateTime date;
 
+    public Sale(Antique antique, BigDecimal price, User buyer, LocalDateTime date) {
+        this.antique = antique;
+        this.price = price;
+        this.buyer = buyer;
+        this.date = date;
+    }
+
+    public Sale() {
+
+    }
+
     public Integer getId() {
         return id;
     }
