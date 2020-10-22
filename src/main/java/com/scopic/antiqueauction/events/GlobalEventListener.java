@@ -5,6 +5,7 @@ import com.scopic.antiqueauction.domain.entity.Antique;
 import com.scopic.antiqueauction.domain.entity.PastBid;
 import com.scopic.antiqueauction.domain.entity.Sale;
 import com.scopic.antiqueauction.domain.entity.User;
+import com.scopic.antiqueauction.domain.enums.Status;
 import com.scopic.antiqueauction.service.AntiqueService;
 import com.scopic.antiqueauction.service.PastBidService;
 import com.scopic.antiqueauction.service.SaleService;
@@ -16,7 +17,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.context.event.EventListener;
 
-import javax.validation.constraints.Past;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,6 +55,9 @@ public class  GlobalEventListener{
         Antique antique=deadlineEvent.getAntique();
         Set<User> users = findUsersWhoBid(antique);
         PastBid latestBid=pastBidService.getHighestPastBid(antique);
+        latestBid.setStatus(Status.WON);
+        pastBidService.insertPastBid(latestBid);
+        pastBidService.markAllBidsExceptHighest(antique, Status.LOST);
         saleService.insertSale(new Sale(latestBid.getAntique(), latestBid.getBid(), latestBid.getUser(), latestBid.getTime()));
         sendSaleNotificationMail(users,latestBid);
         sendBillMail(latestBid);

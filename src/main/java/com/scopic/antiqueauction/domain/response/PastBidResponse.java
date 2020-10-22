@@ -1,21 +1,23 @@
 package com.scopic.antiqueauction.domain.response;
 
+import com.scopic.antiqueauction.domain.enums.Status;
+
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public class PastBidResponse {
 
-    private Integer AntiqueId;
+    private String antique;
     private String username;
     private BigDecimal bid;
-    private LocalDateTime time;
+    private String time;
+    private Status status;
 
-    public Integer getAntiqueId() {
-        return AntiqueId;
+    public String getAntique() {
+        return antique;
     }
 
-    public void setAntiqueId(Integer antiqueId) {
-        AntiqueId = antiqueId;
+    public void setAntique(String antique) {
+        this.antique = antique;
     }
 
     public String getUsername() {
@@ -34,11 +36,19 @@ public class PastBidResponse {
         this.bid = bid;
     }
 
-    public LocalDateTime getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(String time) {
         this.time = time;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

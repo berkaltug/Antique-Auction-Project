@@ -1,10 +1,9 @@
 package com.scopic.antiqueauction.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.scopic.antiqueauction.domain.enums.Status;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -20,6 +19,7 @@ public class PastBid {
     private User user;
     private BigDecimal bid;
     private LocalDateTime time;
+    private Status status;
 
     public Integer getId() {
         return id;
@@ -61,6 +61,14 @@ public class PastBid {
         this.time = time;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,12 +78,13 @@ public class PastBid {
                 Objects.equals(antique, pastBid.antique) &&
                 Objects.equals(user, pastBid.user) &&
                 Objects.equals(bid, pastBid.bid) &&
-                Objects.equals(time, pastBid.time);
+                Objects.equals(time, pastBid.time) &&
+                status == pastBid.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, antique, user, bid, time);
+        return Objects.hash(id, antique, user, bid, time, status);
     }
 
     @Override
@@ -86,6 +95,7 @@ public class PastBid {
                 ", user=" + user +
                 ", bid=" + bid +
                 ", time=" + time +
+                ", state=" + status +
                 '}';
     }
 }

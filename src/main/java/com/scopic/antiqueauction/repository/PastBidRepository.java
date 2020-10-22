@@ -15,4 +15,5 @@ public interface PastBidRepository extends CrudRepository<PastBid,Integer> {
     void deleteAllByAntique(Antique antique);
     List<PastBid> findAllByUser(User user);
     List<PastBid> findAllByAntiqueAndUser(Antique antique,User user);
+
 }
