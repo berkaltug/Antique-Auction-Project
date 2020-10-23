@@ -81,9 +81,9 @@ public class  GlobalEventListener{
         message.setSubject("Congratulations");
         StringBuffer sb=new StringBuffer();
         sb.append("Congratiolations you bought the antique !\n");
-        sb.append("Antique Name :" + latestBid.getAntique().getName() + "\n");
-        sb.append("Your Bid : " + latestBid.getBid().toString() + "$\n");
-        sb.append("Date :" + latestBid.getTime().toString() + "\n");
+        sb.append("Antique Name :" + latestBid.getAntique().getName() + " \n");
+        sb.append("Your Bid : " + latestBid.getBid().toString() + "$ \n");
+        sb.append("Date :" + latestBid.getTime().toString() + " \n");
         message.setText(sb.toString());
         mailSender.send(message);
     }
